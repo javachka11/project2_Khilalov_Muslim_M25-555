@@ -39,3 +39,7 @@
 
 Введите команду:&ensp;exit\
 Выход из программы.
+
+#### Запись работы с таблицами (asciinema)
+
+[![asciicast](https://asciinema.org/a/kOpWCJUFBPD3y7mvGiaiMBvZV.svg)](https://asciinema.org/a/kOpWCJUFBPD3y7mvGiaiMBvZV)
