@@ -2,17 +2,32 @@ import json
 
 
 def load_metadata(filepath):
-    d = None
+    """
+        Загрузить словарь с таблицами базы данных из JSON-файла.
+        Если файла по данному пути не существует, то вернуть пустой словарь.
+
+        filepath - путь к JSON-файлу (относительно корневого каталога проекта).
+    """
+
+    metadata = None
     try:
         fp = open(filepath, 'r')
     except FileNotFoundError:
-        d = dict()
+        metadata = dict()
     else:
-        d = json.load(fp)
+        metadata = json.load(fp)
         fp.close()
-    return d
+    return metadata
 
 
 def save_metadata(filepath, data):
-    with open(filepath, 'w+') as fp:
+    """
+        Сохранить словарь с таблицами в JSON-файл базы данных.
+
+        filepath - путь к JSON-файлу (относительно корневого каталога проекта)
+        (если файла не существует, он будет создан);
+        data - сохраняемый словарь с таблицами.
+    """
+    
+    with open(filepath, 'w') as fp:
         json.dump(data, fp)
