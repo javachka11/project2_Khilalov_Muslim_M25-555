@@ -83,7 +83,8 @@ def insert(metadata, table_data, table_name, values):
 
     if num_values != num_columns - 1:
         print(f'Ошибка: В таблице {num_columns} колонок, '\
-              f'а было передано {num_values+1} значений.')
+              f'а было передано {num_values+1} значений '\
+                '(включая генерируемый ID).')
         return None
     
     columns = list(metadata[table_name].keys())
@@ -97,7 +98,9 @@ def insert(metadata, table_data, table_name, values):
             return None
         validate_values.append(val_dict[columns[i]])
 
-    entry_id = len(table_data) + 1
+    table_ids = [entry['ID'] for entry in table_data]
+
+    entry_id = max([0] + table_ids) + 1
     values = [entry_id] + validate_values
 
     entry = dict(zip(columns, values))

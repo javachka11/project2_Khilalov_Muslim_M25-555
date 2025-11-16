@@ -33,7 +33,7 @@ def save_metadata(filepath, data):
     """
 
     with open(filepath, 'w') as fp:
-        json.dump(data, fp)
+        json.dump(data, fp, indent=4)
 
 
 def load_table_data(table_name):
@@ -72,4 +72,4 @@ def save_table_data(table_name, data, metadata):
     if table_name in metadata.keys():
         filepath = os.path.join(DATA_DIR, table_name+'.json')
         with open(filepath, 'w') as fp:
-            json.dump(data, fp)
+            json.dump(data, fp, indent=4)

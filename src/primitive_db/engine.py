@@ -23,12 +23,24 @@ def print_help():
    
     print("\n***Процесс работы с таблицей***")
     print("Функции:")
-    print("<command> create_table <имя_таблицы> <столбец1:тип> .. - создать таблицу")
+    print("<command> create_table <имя_таблицы> <столбец1:тип> "\
+          ".. - создать таблицу")
     print("<command> list_tables - показать список всех таблиц")
     print("<command> drop_table <имя_таблицы> - удалить таблицу")
-    
+    print("<command> insert into <имя_таблицы> values "\
+          "(<значение1>, <значение2>, ...) - создать запись.")
+    print("<command> select from <имя_таблицы> "
+          "where <столбец> = <значение> - прочитать записи по условию.")
+    print("<command> select from <имя_таблицы> - прочитать все записи.")
+    print("<command> update <имя_таблицы> set <столбец1> = <новое_значение1> "\
+          "where <столбец_условия> = <значение_условия> - обновить запись.")
+    print("<command> delete from <имя_таблицы> where "\
+          "<столбец> = <значение> - удалить запись.")
+    print("<command> info <имя_таблицы> - вывести информацию о таблице.")
+
+
     print("\nОбщие команды:")
-    print("<command> exit - выход из программы")
+    print("<command> exit | quit - выход из программы")
     print("<command> help - справочная информация\n")
 
 
@@ -39,8 +51,8 @@ def run():
     
     filepath = 'db_meta.json'
     while True:
-        metadata = load_metadata(filepath)
         command = welcome()
+        metadata = load_metadata(filepath)
         sh = shlex.shlex(command, punctuation_chars='()')
         sh.whitespace = ',= '
         sh.whitespace_split = True
