@@ -8,7 +8,7 @@
 
 |Команда|Описание|
 |:-|-:|
-|`create_table` `tab_name` `col1_name:col1_type` .. |Создать таблицу `tab_name`(`col1_name:col1_type`, ..)|
+|`create_table` `tab_name` `column1_name:column1_type` .. |Создать таблицу `tab_name`(`column1_name:column1_type`, ..)|
 |`list_tables`|Отобразить список таблиц|
 |`drop_table` `tab_name`|Удалить таблицу `tab_name`|
 |`help`|Отобразить команды и их описания|
@@ -16,30 +16,94 @@
 
 #### Пример работы с таблицами:
 
-Введите команду:&ensp;create_table&ensp;users&ensp;name:str&ensp;age:int&ensp;has_job:bool\
-Таблица "users" успешно создана со столбцами: id:int, name:str, age:int, has_job:bool
+<pre>Введите команду: create_table users name:str age:int has_job:bool
+Таблица &quot;users&quot; успешно создана со столбцами: id:int, name:str, age:int, has_job:bool
+</pre>
 
-Введите команду:&ensp;list_tables\
-\- users
+<pre>Введите команду: list_tables
+- users
+</pre>
 
-Введите команду:&ensp;drop_table&ensp;users\
-Таблица "users" успешно удалена.
+<pre>Введите команду: drop_table users
+Таблица &quot;users&quot; успешно удалена.
+</pre>
 
-Введите команду:&ensp;help
-
-\*\*\*Процесс работы с таблицей\*\*\*\
-Функции:\
-\<command\> create_table \<имя_таблицы\> \<столбец1:тип\> .. - создать таблицу\
-\<command\> list_tables - показать список всех таблиц\
-\<command\> drop_table \<имя_таблицы\> - удалить таблицу
-
-Общие команды:\
-\<command\> exit - выход из программы\
-\<command\> help - справочная информация
-
-Введите команду:&ensp;exit\
+<pre>Введите команду: exit
 Выход из программы.
+</pre>
 
-#### Запись работы с таблицами (asciinema)
+#### Пример работы с таблицами (asciinema):
 
 [![asciicast](https://asciinema.org/a/kOpWCJUFBPD3y7mvGiaiMBvZV.svg)](https://asciinema.org/a/kOpWCJUFBPD3y7mvGiaiMBvZV)
+
+## CRUD-операции
+
+#### Интерфейс для CRUD-операций:
+
+|Команда|Описание|
+|:-|-:|
+|`insert` `into` `tab_name` `values` (`value1`, ..)|Добавить новую запись (`value1`, ..) в таблицу `tab_name`|
+|`select` `from` `tab_name` `where` `column = value`|Выбрать записи из таблицы `tab_name` по условию `where`|
+|`select` `from` `tab_name`|Выбрать все записи из таблицы `tab_name`|
+|`update` `tab_name` `set` `column = value` `where` `column = value`|Обновить записи таблицы `tab_name` по правилу `set` по условию `where`|
+|`delete` `from` `tab_name` `where` `column = value`|Удалить записи из таблицы `tab_name` по условию `where`|
+|`info` `tab_name`|Вывести краткую информацию по таблице `tab_name`|
+
+#### Пример работы с CRUD-операциями:
+
+<pre>Введите команду: info users
+Таблица: users
+Столбцы: ID:int, name:str, age:int, has_job:bool
+Количество записей: 2</pre>
+
+<pre>Введите команду: insert into users values (&quot;Jack&quot;, 42, true)
+Запись с ID=3 успешно добавлена в таблицу &quot;users&quot;.</pre>
+
+<pre>Введите команду: select from users
++----+--------+-----+---------+
+| ID |  name  | age | has_job |
++----+--------+-----+---------+
+| 1  | Sergey |  29 |   True  |
+| 2  |  Max   |  31 |  False  |
+| 3  |  Jack  |  42 |   True  |
++----+--------+-----+---------+
+</pre>
+
+<pre>Введите команду: select from users where has_job = true
++----+--------+-----+---------+
+| ID |  name  | age | has_job |
++----+--------+-----+---------+
+| 1  | Sergey |  29 |   True  |
+| 3  |  Jack  |  42 |   True  |
++----+--------+-----+---------+
+</pre>
+
+<pre>Введите команду: update users set has_job = true where name = &quot;Max&quot;
+Запись с ID=2 в таблице &quot;users&quot; успешно обновлена.
+</pre>
+
+<pre>Введите команду: select from users
++----+--------+-----+---------+
+| ID |  name  | age | has_job |
++----+--------+-----+---------+
+| 1  | Sergey |  29 |   True  |
+| 2  |  Max   |  31 |   True  |
+| 3  |  Jack  |  42 |   True  |
++----+--------+-----+---------+
+</pre>
+
+<pre>Введите команду: delete from users where name = &quot;Max&quot;
+Запись с ID=2 успешно удалена из таблицы &quot;users&quot;.</pre>
+
+<pre>Введите команду: select from users
++----+--------+-----+---------+
+| ID |  name  | age | has_job |
++----+--------+-----+---------+
+| 1  | Sergey |  29 |   True  |
+| 3  |  Jack  |  42 |   True  |
++----+--------+-----+---------+
+</pre>
+
+#### Пример работы с CRUD-операциями (asciinema):
+
+[![asciicast](https://asciinema.org/a/gbZWqY44Rxua1fFnkaJsDRhEN.svg)](https://asciinema.org/a/gbZWqY44Rxua1fFnkaJsDRhEN)
