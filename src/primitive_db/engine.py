@@ -1,7 +1,10 @@
 import prompt
 import shlex
-from src.primitive_db.utils import load_metadata, save_metadata
-from src.primitive_db.core import create_table, drop_table, list_tables
+from src.primitive_db.utils import load_metadata, save_metadata, load_table_data, save_table_data
+from src.primitive_db.core import create_table, drop_table, list_tables, insert, select, update, delete, info
+from src.primitive_db.parser import parser
+from prettytable import PrettyTable
+
 
 def welcome():
     """
@@ -10,6 +13,7 @@ def welcome():
     
     command = prompt.string('\nВведите команду: ')
     return command
+
 
 
 def print_help():
@@ -33,24 +37,86 @@ def run():
         Основная функция-обработчик команд.
     """
     
-    filepath = 'src/primitive_db/db_meta.json'
+    filepath = 'db_meta.json'
     while True:
         metadata = load_metadata(filepath)
-        command = welcome().lower()
-        args = shlex.split(s=command, comments=True)
+        command = welcome()
+        sh = shlex.shlex(command, punctuation_chars='()')
+        sh.whitespace = ',= '
+        sh.whitespace_split = True
+        args = list(sh)
+
         match args:
             case ['create_table', table_name, *columns]:
-
                 create_table(metadata, table_name, columns)
+
             case ['drop_table', table_name]:
+                save_table_data(table_name, [], metadata)
                 drop_table(metadata, table_name)
+
             case ['list_tables']:
                 list_tables(metadata)
+
+            case ['insert', 'into', table_name, 'values', '(', *values, ')']:
+                table_data = load_table_data(table_name)
+                insert(metadata, table_data, table_name, values)
+                save_table_data(table_name, table_data, metadata)
+
+            case ['select', 'from', table_name, 'where', where_column, where_value]:
+                table_data = load_table_data(table_name)
+                where_clause = parser('='.join([where_column, where_value]),
+                                      metadata, table_name)
+                if where_clause is not None:
+                    select_data = select(metadata, table_data, table_name, where_clause)
+
+                    if select_data is not None:
+                        select_table = PrettyTable()
+                        select_table.field_names = list(metadata[table_name].keys())
+                        select_table.add_rows(select_data)
+                        print(select_table)
+            
+            case ['select', 'from', table_name]:
+                table_data = load_table_data(table_name)
+                select_data = select(metadata, table_data, table_name, None)
+
+                if select_data is not None:
+                    select_table = PrettyTable()
+                    select_table.field_names = list(metadata[table_name].keys())
+                    select_table.add_rows(select_data)
+                    print(select_table)
+
+            case ['update', table_name, 'set', set_column, set_value,
+                  'where', where_column, where_value]:
+                table_data = load_table_data(table_name)
+                set_clause = parser('='.join([set_column, set_value]),
+                                      metadata, table_name)
+                where_clause = parser('='.join([where_column, where_value]),
+                                      metadata, table_name)
+                update(metadata, table_data, table_name, set_clause, where_clause)
+                save_table_data(table_name, table_data, metadata)
+
+            case ['delete', 'from', table_name, 'where', where_column, where_value]:
+                table_data = load_table_data(table_name)
+                where_clause = parser('='.join([where_column, where_value]),
+                                      metadata, table_name)
+                delete(metadata, table_data, table_name, where_clause)
+                save_table_data(table_name, table_data, metadata)
+
+            case ['info', table_name]:
+                table_data = load_table_data(table_name)
+                info(metadata, table_data, table_name)
+
             case ['help']:
                 print_help()
+
             case ['exit']:
                 print('Выход из программы.\n')
                 return
+            
+            case ['quit']:
+                print('Выход из программы.\n')
+                return
+            
             case _:
-                print(f'Функции <{args[0]}> нет. Попробуйте снова.')
+                print(f'Команда не найдена. Попробуйте снова.')
         save_metadata(filepath, metadata)
